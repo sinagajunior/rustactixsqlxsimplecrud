@@ -1,2 +1,2 @@
 -- Add down migration script here
-DROP TABLE IF EXITS notes;
+DROP TABLE IF EXISTS notes;

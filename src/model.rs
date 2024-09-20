@@ -1,4 +1,4 @@
-use serde::{Debug, Deserialize, FromRow, Serialize};
+use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use uuid::Uuid;
 
@@ -12,6 +12,6 @@ pub struct NoteModel {
     pub published: Option<bool>,
     #[serde(rename = "createdAt")]
     pub created_at: Option<chrono::DateTime<chrono::Utc>>,
-    #[sede(rename = "updatedAt")]
+    #[serde(rename = "updatedAt")]
     pub updated_at: Option<chrono::DateTime<chrono::Utc>>,
 }

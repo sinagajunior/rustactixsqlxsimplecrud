@@ -90,7 +90,7 @@ async fn get_note_handler(
     data: web::Data<AppState>,
 ) -> impl Responder {
     let note_id = path.into_inner();
-    let query_result = sqlx::query_as!(NoteModel, "SELECT * FROM note WHERE id = $1", note_id)
+    let query_result = sqlx::query_as!(NoteModel, "SELECT * FROM notes WHERE id = $1", note_id)
         .fetch_one(&data.db)
         .await;
 
@@ -134,21 +134,21 @@ async fn edit_note_handler(
             body.title.to_owned().unwrap_or(note.title),
             body.content.to_owned().unwrap_or(note.content),
             body.category.to_owned().unwrap_or(note.category.unwrap()),
-            body.published.unwrap_or(note.published,unwrap()),
+            body.published.unwrap_or(note.published.unwrap()),
             now,
-            note_id
-        )
+            note_id)
         .fetch_one(&data.db)
         .await;
 
     match query_result {
         Ok(note) => {
             let note_response =
-                serde_json::json!({{"status":"success","data": serde_json::json!({"note":note})}});
+                serde_json::json!({"status":"success","data": serde_json::json!({"note": note })});
             return HttpResponse::Ok().json(note_response);
         }
         Err(err) => {
-            let message = format!("Error : {:?}", err)
+            let message = format!("Error : {:?}", err);
+            return HttpResponse::InternalServerError()
                 .json(serde_json::json!({"status":"error","message": message}));
         }
     }
@@ -156,7 +156,7 @@ async fn edit_note_handler(
 
 #[delete("/notes/{id}")]
 async fn delete_note_handler(
-    path: web::Path<uuid: Uuid>,
+    path: web::Path<uuid::Uuid>,
     data: web::Data<AppState>,
 ) -> impl Responder {
     let note_id = path.into_inner();
@@ -181,5 +181,6 @@ pub fn config(conf: &mut web::ServiceConfig) {
         .service(get_note_handler)
         .service(edit_note_handler)
         .service(delete_note_handler);
+
     conf.service(scope);
 }

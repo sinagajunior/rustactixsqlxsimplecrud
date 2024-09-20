@@ -12,7 +12,7 @@ IF NOT EXISTS notes (
     created_at  TIMESTAMP
     WITH
      TIME ZONE DEFAULT NOW(),
-    update_at TIMESTAMP
+    updated_at TIMESTAMP
     WITH
       TIME ZONE DEFAULT NOW()
 );
